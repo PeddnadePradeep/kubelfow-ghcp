@@ -1,14 +1,14 @@
 # Using Notebook Intelligence in JupyterLab Kubeflow
 
 ## Overview
-Notebook Intelligence is a JupyterLab extension that provides AI-powered code assistance and suggestions for  notebooks.
+Notebook Intelligence is a JupyterLab extension that provides AI-powered code assistance and suggestions for notebooks.
 
 ## Features
 
 - AI-powered code completions
-- Smart code suggestions
 - Natural language to code conversion
-- Code explanation and documentation generation
+- Documentation generation
+- Agent
 
 ## Installation
 The extension is pre-installed in this JupyterLab environment with version 2.4.2.
@@ -19,26 +19,26 @@ The extension is pre-installed in this JupyterLab environment with version 2.4.2
 Navigate to your Kubeflow dashboard and launch JupyterLab.
 
 ### 2. Check Extension is enabled
-![Enable Extension](./images/enable_nbi.png)
+![Enable Extension]( images/enable_nbi.png)
 1. Ensure notebook intelligence is enabled
 
 ### 3. Login to GHCP
-![LOGIN](./images/login_GHCP.png)
+![LOGIN](images/login_GHCP.png)
 
-### 3. Using Code Assistance
+### 4. Using Code Assistance
 ![Code Assistance](images/code-assistance.png)
 1. Open or create a new notebook
 2. Start typing code
 3. AI suggestions will appear automatically
 4. Press Tab to accept suggestions
 
-### 4. Natural Language Commands
+### 5. Natural Language Commands
 ![Natural Language](images/nl-commands.png)
 1. Type "//" followed by your request in natural language
 2. Example: "//create a pandas dataframe with sample data"
 3. Press Enter to execute
 
-## Configuration
+### 6. Configuration
 
 ![Configuration](images/config.png)
 
