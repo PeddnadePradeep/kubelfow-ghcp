@@ -26,6 +26,7 @@ Navigate to your Kubeflow dashboard and launch JupyterLab.
 ![LOGIN](images/login_GHCP.png)
 
 ### 4. Using Code Assistance
+![Chat](images/code-assistance-chat.png)
 ![Code Assistance](images/code-assistance.png)
 1. Open or create a new notebook
 2. Start typing code
