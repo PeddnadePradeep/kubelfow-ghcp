@@ -20,7 +20,11 @@ RUN curl -fsSL "https://github.com/coder/code-server/releases/download/v${CODESE
  && rm -f /tmp/code-server.deb
 COPY --chown=${NB_USER}:${NB_GID} --chmod=755 s6/ /etc
 
+USER $NB_UID
 
+EXPOSE 8888
+
+USER root
 # args - software versions
 # https://open-vsx.org/extension/ms-python/python
 # https://open-vsx.org/extension/ms-toolsai/jupyter
@@ -31,6 +35,9 @@ ARG IPYKERNEL_VERSION=6.29.5
 ARG MINIFORGE_VERSION=24.11.3-0
 ARG PIP_VERSION=24.3.1
 ARG PYTHON_VERSION=3.11.11
+
+
+
 
 # setup environment for conda
 ENV CONDA_DIR /opt/conda
@@ -72,12 +79,12 @@ RUN case "${TARGETARCH}" in \
 # NOTE: we need this for jupyter codeserver extension to work
     # Pins the ipykernel package to the specified version in the conda environment,
     # ensuring that conda does not update it beyond the given version during future installs or updates.
-    RUN echo "ipykernel ==${IPYKERNEL_VERSION}" >> ${CONDA_DIR}/conda-meta/pinned \
+RUN echo "ipykernel ==${IPYKERNEL_VERSION}" >> ${CONDA_DIR}/conda-meta/pinned \
  && conda install -y -q \
     ipykernel==${IPYKERNEL_VERSION} \
  && conda clean -a -f -y
 
-# install - requirements.txt
+# # install - requirements.txt
 COPY --chown=${NB_USER}:${NB_GID} requirements.txt /tmp
 RUN python3 -m pip install -r /tmp/requirements.txt --quiet --no-cache-dir \
  && rm -f /tmp/requirements.txt
@@ -87,24 +94,26 @@ RUN python3 -m pip install -r /tmp/requirements.txt --quiet --no-cache-dir \
 #&& curl -fsSL "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/VisualStudioExptTeam/vsextensions/VSGitHubCopilot/0.2.765.20217/vspackage" -o /tmp/VisualStudio.GitHub.Copilot.vsix \
 #&& gunzip -c /tmp/VisualStudio.GitHub.Copilot.vsix > /tmp/github-copilot-chat-decompressed.vsix
 # install - codeserver extensions
-RUN code-server --install-extension "ms-python.python@${CODESERVER_PYTHON_VERSION}" --force \
- && code-server --install-extension "ms-toolsai.jupyter@${CODESERVER_JUPYTER_VERSION}" --force \
- && code-server --list-extensions --show-versions
+# RUN code-server --install-extension "ms-python.python@${CODESERVER_PYTHON_VERSION}" --force \
+#  && code-server --install-extension "ms-toolsai.jupyter@${CODESERVER_JUPYTER_VERSION}" --force \
+#  && code-server --list-extensions --show-versions
 
 COPY --chown=${NB_USER}:${NB_GID} install-copilot.sh /tmp/install-copilot.sh
 RUN chmod +x /tmp/install-copilot.sh \
-   && /tmp/install-copilot.sh \
-   && rm -f /tmp/install-copilot.sh \
-   && code-server --list-extensions --show-versions
+  && /tmp/install-copilot.sh \
+  && rm -f /tmp/install-copilot.sh \
+  && code-server --list-extensions --show-versions
 
 
-# home - pre-populate home with files for this image
+# # home - pre-populate home with files for this image
 COPY --chown=${NB_USER}:${NB_GID} home/. ${HOME}/
 
-# s6 - 01-copy-tmp-home
-# NOTE: the contents of $HOME_TMP are copied to $HOME at runtime
-#       this is a workaround because a PVC will be mounted at $HOME
-#       and the contents of $HOME will be hidden
+# # s6 - 01-copy-tmp-home
+# # NOTE: the contents of $HOME_TMP are copied to $HOME at runtime
+# #       this is a workaround because a PVC will be mounted at $HOME
+# #       and the contents of $HOME will be hidden
 RUN cp -p -r -T "${HOME}" "${HOME_TMP}" \
     # give group same access as user (needed for OpenShift)
  && chmod -R g=u "${HOME_TMP}"
+
+
